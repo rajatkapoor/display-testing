@@ -22,7 +22,7 @@ class GtkWorker(Process):
         
         
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.connect("destroy", self.destroy)
+        self.window.connect("delete-event", self.destroy)
         
         #a widget to show image
         self.image = gtk.Image()
@@ -38,7 +38,11 @@ class GtkWorker(Process):
         gtk.main()
         
     def destroy(self,widget,data=None):
-        self.gtk.main_quit()
+        #self.gtk.main_quit()
+        #self.window.hide()
+        self.window.hide()
+        return True
+        
 
     def pollMsg(self,data=None):
     
@@ -57,7 +61,8 @@ class GtkWorker(Process):
         #show image from string
         pix =  self.gtk.gdk.pixbuf_new_from_data(data['data'], self.gtk.gdk.COLORSPACE_RGB, False, data['depth'], data['width'], data['height'], data['width']*3)
         self.image.set_from_pixbuf(pix)
-    
+        self.window.show_all()
+        
     def checkMsg(self,source=None,condition=None):
         
         print "Checking Message " + `id(self)`
