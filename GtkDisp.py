@@ -38,7 +38,9 @@ class GtkWorker(Process):
         gtk.main()
         
     def destroy(self,widget,data=None):
-        self.gtk.main_quit()
+        self.window.destroy()
+        #self.gtk.main_quit()
+        
 
     def pollMsg(self,data=None):
     
@@ -83,9 +85,10 @@ class GtkWorker(Process):
 class GtkDisplay:
     def __init__(self):
         #each display has its own process
-        parentConn,childConn = Pipe()
-        self.connection = parentConn
-        self.worker = GtkWorker(childConn)
+        self.p = Pipe()
+        self.parentConn,self.childConn = Pipe()
+        self.connection = self.parentConn
+        self.worker = GtkWorker(self.childConn)
         self.worker.start()
         
     def showImg(self,img):
